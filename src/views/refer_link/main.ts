@@ -356,6 +356,56 @@ export class ReferLinkLauncher {
       },
     );
     context.subscriptions.push(disposable);
+    disposable = vscode.commands.registerCommand(
+      "bmx.referLink.handleRejFile",
+      async () => {
+        const activeEditor = vscode.window.activeTextEditor;
+
+        if (!activeEditor) {
+          vscode.window.showErrorMessage("there is no active editor");
+          return;
+        }
+
+        const rejFileUri = activeEditor.document.uri;
+        const rejFilePath = rejFileUri.fsPath;
+
+        if (!rejFilePath.endsWith(".rej")) {
+          vscode.window.showErrorMessage("it's not a .rej file!");
+          return;
+        }
+
+        try {
+          const sourceFilePath = rejFilePath.replace(/\.rej$/, "");
+
+          const sourceFileUri = vscode.Uri.file(sourceFilePath);
+          const sourceFileExists =
+            await vscode.workspace.fs.stat(sourceFileUri);
+
+          if (!sourceFileExists) {
+            vscode.window.showErrorMessage(
+              `source file not exists: ${sourceFilePath}`,
+            );
+            return;
+          }
+
+          await vscode.commands.executeCommand(
+            "workbench.action.closeActiveEditor",
+          );
+
+          const sourceEditor = await vscode.window.showTextDocument(
+            sourceFileUri,
+            { viewColumn: vscode.ViewColumn.One },
+          );
+          const rejEditor = await vscode.window.showTextDocument(rejFileUri, {
+            viewColumn: vscode.ViewColumn.Two,
+          });
+        } catch (error) {
+          console.error(error);
+          vscode.window.showErrorMessage("src file not found!");
+        }
+      },
+    );
+    context.subscriptions.push(disposable);
   }
 }
 

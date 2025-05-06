@@ -50,6 +50,10 @@
         "title": "bmx.referLink: set random color for curr theme"
       },
       {
+        "command": "bmx.referLink.handleRejFile",
+        "title": "diff .rej"
+      },
+      {
         "command": "bmx.referLink.showHtmlPreview",
         "title": "bmx.referLink: show html preview"
       }
@@ -59,6 +63,13 @@
         {
           "command": "bmx.referLink.copyAigcFilesContent",
           "when": "resourceScheme == 'file'",
+          "group": "navigation"
+        }
+      ],
+      "editor/title": [
+        {
+          "command": "bmx.referLink.handleRejFile",
+          "when": "resourceExtname == .rej",
           "group": "navigation"
         }
       ],
